@@ -3,8 +3,10 @@ This is a minimal python wrapper for [MQLib](https://github.com/MQLib/MQLib) whi
 
 ## What does it do?
 It solves the following minimization problem
+
 $$\underset{x_i \in \{-1, 1\}}{\rm minimize} \ \sum_{(i, j) \in E,\ i<j} J_{ij} x_ix_j + \sum_{i\in V} h_i x_i,$$
-where $E$ is edges, $V$ is nodes in a problem graph $G = (V, E)$, $J_ij$ is an interaction strength, and $h_i$ is a local magnetic field.
+
+where $E$ is edges, $V$ is nodes in a problem graph $G = (V, E)$, $J_{ij}$ is an interaction strength, and $h_i$ is a local magnetic field.
 
 ## How to use it?
 The library exposes two functions `run_heuristics` and `get_energy_function`. `run_heuristics` accepts a configuration (a dict) that specifies the optimization problem and parameters of the selected MQLib solvers, executes the solvers, and returns the resulting solutions. `get_energy_function` accepts the same configuration and returns a callable that evaluates the energy for a given spin configuration. For more details on the fortmat of the configuration see `examples/small_problem.py`
