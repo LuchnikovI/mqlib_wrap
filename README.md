@@ -4,7 +4,7 @@ This is a minimal python wrapper for [MQLib](https://github.com/MQLib/MQLib) whi
 ## What does it do?
 It solves the following minimization problem
 
-$$\underset{x_i \in \{-1, 1\}}{\rm minimize} \ \sum_{(i, j) \in E,\ i<j} J_{ij} x_ix_j + \sum_{i\in V} h_i x_i,$$
+$\underset{x_i \in \{-1, 1\}}{\rm minimize} \ \sum_{(i, j) \in E,\ i<j} J_{ij} x_ix_j + \sum_{i\in V} h_i x_i,$
 
 where $E$ is edges, $V$ is nodes in a problem graph $G = (V, E)$, $J_{ij}$ is an interaction strength, and $h_i$ is a local magnetic field.
 
