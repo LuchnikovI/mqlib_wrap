@@ -12,22 +12,22 @@ MQLIB_EXEC_PATH = MQLIB_PATH / "MQLib"
 REPO_URL = "https://github.com/LuchnikovI/MQLib"
 
 
-def uninstall_mqlib() -> None:
+def uninstall_mqlib():
     if MQLIB_PATH.exists():
         shutil.rmtree(MQLIB_PATH)
     logger.info("MQLib executable has been uninstalled")
 
 
-def create_mqlib_dir() -> None:
+def create_mqlib_dir():
     MQLIB_PATH.mkdir(parents=True, exist_ok=True)
 
 
-def check_tool_exists(tool: str) -> None:
+def check_tool_exists(tool: str):
     if shutil.which(tool) is None:
         raise RuntimeError(f"{tool} is not installed or not in PATH")
 
 
-def install_mqlib() -> None:
+def install_mqlib():
     create_mqlib_dir()
     with TemporaryDirectory() as build:
         check_tool_exists("git")
@@ -49,7 +49,7 @@ def install_mqlib() -> None:
         logger.info("MQLib executable has been installed")
 
 
-def ensure_mqlib() -> None:
+def ensure_mqlib():
     if MQLIB_EXEC_PATH.exists():
         logger.info("MQLib executable is found")
     else:
