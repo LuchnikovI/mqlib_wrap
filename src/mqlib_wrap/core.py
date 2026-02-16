@@ -34,7 +34,7 @@ def _run_heuristics(config):
     for heuristic in heuristics:
         logger.debug(f"Running {heuristic} heuristic")
         result = _run_heuristic(config, heuristic)
-        logger.debug(f"Heuristic {heuristic} finished, best energy {result["energy"]}")
+        logger.debug("Heuristic %s finished, best energy s%", heuristic, result["energy"])
         results[heuristic] = result
     return results
 
