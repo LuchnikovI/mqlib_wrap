@@ -51,6 +51,7 @@ HEURISTICS = {
 DEFAULT_NODES = {}
 DEFAULT_HEURISTICS = "all"
 DEFAULT_RUNTIME_LIMIT = 10
+DEFAULT_HARD_RUNTIME_LIMIT = 7 * 24 * 3600 # one week in seconds
 DEFAULT_SEED = 42
 DEFAULT_DEFAULT_FIELD = 0.
 
@@ -109,6 +110,14 @@ def analyse_and_desug_default_field(default_field):
     if is_not_number(default_field):
         raise TypeError(f"`default_field` must be a number, got {default_field} of type {type(default_field)}")
     return float(default_field)
+
+
+def analyse_and_desug_hard_runtime_limit(hard_runtime_limit):
+    if not isinstance(hard_runtime_limit, (int, float)) \
+       or hard_runtime_limit < 0 \
+       or hard_runtime_limit > DEFAULT_HARD_RUNTIME_LIMIT:
+        raise ValueError(f"Invalid `hard_runtime_limit` field {hard_runtime_limit}, must be a positive integer value <= {DEFAULT_HARD_RUNTIME_LIMIT}")
+    return hard_runtime_limit
 
 
 def check_node(node):
@@ -205,6 +214,7 @@ def analyse_and_desug_config(config):
     _nodes = analyse_and_desug_nodes(get_or_default_and_warn(config, "nodes", DEFAULT_NODES))
     heuristics = analyse_and_desug_heuristics(get_or_default_and_warn(config, "heuristics", DEFAULT_HEURISTICS))
     runtime_limit = analyse_and_desug_runtime_limit(get_or_default_and_warn(config, "runtime_limit", DEFAULT_RUNTIME_LIMIT))
+    hard_runtime_limit = analyse_and_desug_hard_runtime_limit(get_or_default_and_warn(config, "hard_runtime_limit", DEFAULT_HARD_RUNTIME_LIMIT))
     seed = analyse_and_desug_seed(get_or_default_and_warn(config, "seed", DEFAULT_SEED))
     nodes_number = get_nodes_number(edges, _nodes)
     nodes = {node_id : _nodes.get(node_id, default_field) for node_id in range(nodes_number)}
@@ -219,6 +229,7 @@ def analyse_and_desug_config(config):
         "qubo_shift" : qubo_shift,
         "heuristics" : heuristics,
         "runtime_limit" : runtime_limit,
+        "hard_runtime_limit" : hard_runtime_limit,
         "seed" : seed,
     }
 

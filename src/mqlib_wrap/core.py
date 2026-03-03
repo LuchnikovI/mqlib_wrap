@@ -2,7 +2,7 @@ from functools import reduce
 import logging
 import tempfile
 from pathlib import Path
-from subprocess import run
+from subprocess import TimeoutExpired, run
 
 from mqlib_wrap.config import analyse_and_desug_config, gen_problem_string
 
@@ -13,13 +13,18 @@ MQLIB_PATH = Path.home() / ".mqlib_bin" / "MQLib"
 def _run_heuristic(config, heuristic):
     problem_string = gen_problem_string(config)
     runtime_limit = str(config["runtime_limit"])
+    hard_runtime_limit = config["hard_runtime_limit"]
     seed = str(config["seed"])
     with tempfile.NamedTemporaryFile() as f:
         f.write(bytes(problem_string, "utf-8"))
         f.flush()
         problem_path = f.name
         cmd_args = [MQLIB_PATH, "-fQ", problem_path, "-h", heuristic, "-r", runtime_limit, "-s", seed, "-ps"]
-        result = run(cmd_args, capture_output=True)
+        try:
+            result = run(cmd_args, capture_output=True, timeout=hard_runtime_limit)
+        except TimeoutExpired as _:
+            logger.warning(f"Hard runtime limit {hard_runtime_limit} secs exceeded for {heuristic} heuristic")
+            return {"energy" : None, "configuration": None}
         if result.stderr:
             logger.warning(f"stderr message appeared during MQLib execution: {result.stderr}")
         lines = result.stdout.split(sep=b"\n")
@@ -34,7 +39,7 @@ def _run_heuristics(config):
     for heuristic in heuristics:
         logger.debug(f"Running {heuristic} heuristic")
         result = _run_heuristic(config, heuristic)
-        logger.debug("Heuristic %s finished, best energy s%", heuristic, result["energy"])
+        logger.debug(f"Heuristic {heuristic} finished, best energy {result['energy']}")
         results[heuristic] = result
     return results
 
